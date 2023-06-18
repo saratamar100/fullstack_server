@@ -15,10 +15,10 @@ connection.connect((err) => {
   console.log('Connected to the MySQL server');
 
   // Insert sample data into the users table
-  const insertUsers = `INSERT INTO users (username, password, email, city) VALUES
-    ('john', 'password123', 'john@gmail.com', 'Jerusalem'),
-    ('jane', 'securepassword', 'jane45@gmail.com', 'Beer Sheva'),
-    ('mark', 'mysecretpass', 'marktwain@gmail.com', 'Tel Aviv')`;
+  const insertUsers = `INSERT INTO users (username, name, password, email, city) VALUES
+    ('john', 'john Cohen', 'password123', 'john@gmail.com', 'Jerusalem'),
+    ('jane', 'jane J', 'securepassword', 'jane45@gmail.com', 'Beer Sheva'),
+    ('mark','mark C',  'mysecretpass', 'marktwain@gmail.com', 'Tel Aviv')`;
 
   connection.query(insertUsers, (err, result) => {
     if (err) {
