@@ -18,26 +18,29 @@ connection.connect((err) => {
   console.log('Connected to the MySQL server');
 
   // Create the database if it doesn't exist
-  connection.query('CREATE DATABASE IF NOT EXISTS my_database', (err) => {
+  connection.query('CREATE DATABASE IF NOT EXISTS fullstack6', (err) => {
     if (err) {
       console.error('Failed to create database:', err);
       return;
     }
 
     // Switch to the newly created database
-    connection.query('USE my_database', (err) => {
+    connection.query('USE fullstack6', (err) => {
       if (err) {
         console.error('Failed to switch to the database:', err);
         return;
       }
-      console.log('Using the database: my_database');
+      console.log('Using the database: fullstack6');
 
       // Create the users table
       const createUsersTable = `CREATE TABLE IF NOT EXISTS users (
         user_id INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
-        password VARCHAR(255) NOT NULL
+        password VARCHAR(255) NOT NULL,
+        email VARCHAR(255),
+        city VARCHAR(255)
       )`;
+      
       connection.query(createUsersTable, (err) => {
         if (err) {
           console.error('Failed to create users table:', err);
@@ -85,7 +88,7 @@ connection.connect((err) => {
         user_id INT,
         comment_content TEXT,
         FOREIGN KEY (post_id) REFERENCES posts(post_id),
-        FOREIGN KEY (user_id) REFERENCES users(user_id),
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
       )`;
       connection.query(createCommentsTable, (err) => {
         if (err) {

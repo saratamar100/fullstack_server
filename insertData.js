@@ -4,7 +4,7 @@ const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: process.argv[2],
-  database: "my_database",
+  database: "fullstack6",
 });
 
 connection.connect((err) => {
@@ -17,7 +17,7 @@ connection.connect((err) => {
   // Insert sample data into the users table
   const insertUsers = `INSERT INTO users (username, password, email, city) VALUES
     ('john', 'password123', 'john@gmail.com', 'Jerusalem'),
-    ('jane', 'securepassword', 'jane45@gmail.com', 'Be'er Sheva'),
+    ('jane', 'securepassword', 'jane45@gmail.com', 'Beer Sheva'),
     ('mark', 'mysecretpass', 'marktwain@gmail.com', 'Tel Aviv')`;
 
   connection.query(insertUsers, (err, result) => {

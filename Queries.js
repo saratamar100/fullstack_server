@@ -32,6 +32,19 @@ app.get('/users', (req, res) => {
   });
 });
 
+//fetch user by id
+app.get('/users/:id', (req, res) => {
+  const userId = req.query.id;
+  let query = 'SELECT * FROM users WHERE userId=?';
+  connection.query(query, [userId], (err, result) => {
+    if (err) {
+      console.error('Failed to fetch user:', err);
+      res.status(500).json({ error: 'Failed to fetch user' });
+    } else {
+      res.json(result[0]);
+    }
+  });
+});
 
 // Create a new user
 app.post('/users', (req, res) => {
@@ -104,6 +117,19 @@ app.get('/posts', (req, res) => {
   });
 });
 
+//fetch post by id
+app.get('/posts/:id', (req, res) => {
+  const postId = req.query.id;
+  let query = 'SELECT * FROM posts WHERE postId=?';
+  connection.query(query, [postId], (err, result) => {
+    if (err) {
+      console.error('Failed to fetch post:', err);
+      res.status(500).json({ error: 'Failed to fetch post' });
+    } else {
+      res.json(result[0]);
+    }
+  });
+});
 
 // Create a new post
 app.post('/posts', (req, res) => {
@@ -175,6 +201,20 @@ app.get('/todos', (req, res) => {
   });
 });
 
+//fetch todo by id
+app.get('/todos/:id', (req, res) => {
+  const todoId = req.query.id;
+  let query = 'SELECT * FROM todos WHERE todoId=?';
+  connection.query(query, [todoId], (err, result) => {
+    if (err) {
+      console.error('Failed to fetch todo:', err);
+      res.status(500).json({ error: 'Failed to fetch todo' });
+    } else {
+      res.json(result[0]);
+    }
+  });
+});
+
 
 // Create a new todo
 app.post('/todos', (req, res) => {
@@ -233,7 +273,7 @@ app.get('/comments', (req, res) => {
 }); */
 
 //fetch all comments by postId:
-app.get('/posts', (req, res) => {
+app.get('/comments', (req, res) => {
   const postId = req.query.postId;
   let query = 'SELECT * FROM comments WHERE postId=?';
   connection.query(query, [postId], (err, results) => {
@@ -246,20 +286,47 @@ app.get('/posts', (req, res) => {
   });
 });
 
-
-// Create a new comment
-app.post('/comments', (req, res) => {
-  const { postId, content } = req.body;
-  const query = 'INSERT INTO comments (post_id, content) VALUES (?, ?)';
-  connection.query(query, [postId, content], (err, result) => {
+//fetch comment by id
+app.get('/comments/:id', (req, res) => {
+  const commentId = req.query.id;
+  let query = 'SELECT * FROM comments WHERE commentId=?';
+  connection.query(query, [commentId], (err, result) => {
     if (err) {
-      console.error('Failed to create comment:', err);
-      res.status(500).json({ error: 'Failed to create comment' });
+      console.error('Failed to fetch comment:', err);
+      res.status(500).json({ error: 'Failed to fetch comment' });
     } else {
-      res.status(201).json({ message: 'Comment created successfully' });
+      res.json(result[0]);
     }
   });
 });
+
+// Create a new comment
+app.post('/comments', (req, res) => {
+  const { postId, content, userId } = req.body;
+  const query = 'INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)';
+  const getUserQuery = 'SELECT * FROM users WHERE userId = ?';
+  
+  // Fetch user who posted the comment
+  connection.query(getUserQuery, [userId], (err, result) => {
+    if (err) {
+      console.error('Failed to fetch user:', err);
+      res.status(500).json({ error: 'Failed to fetch user' });
+    } else {
+      const user = result[0]; // Assuming there is only one user with a given userId
+      
+      // Create a new comment
+      connection.query(query, [postId, userId, content], (err, result) => {
+        if (err) {
+          console.error('Failed to create comment:', err);
+          res.status(500).json({ error: 'Failed to create comment' });
+        } else {
+          res.status(201).json({ user, message: 'Comment created successfully' });
+        }
+      });
+    }
+  });
+});
+
 
 // Update a comment
 app.put('/comments/:id', (req, res) => {
@@ -289,12 +356,7 @@ app.delete('/comments/:id', (req, res) => {
     }
   });
 });
-//gets according to parameters:
-app.get("/getUsers", (req, res) => {
-  const reqQueryObject = req.query // returns object with all parameters
-  const userId = req.query.userId // returns "12354411"
-  const name = req.query.name // returns "Billy"
-})
+
 
 
 
