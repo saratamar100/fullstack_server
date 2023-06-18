@@ -1,11 +1,12 @@
 // Import required modules
-const mysql = require('mysql');
+const mysql = require('mysql2');
+
 
 // Create a MySQL connection
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'your_mysql_username',
-  password: 'your_mysql_password',
+  host: "localhost",
+  user: "root",
+  password: process.argv[2],
 });
 
 // Connect to the MySQL server
@@ -84,7 +85,7 @@ connection.connect((err) => {
         user_id INT,
         comment_content TEXT,
         FOREIGN KEY (post_id) REFERENCES posts(post_id),
-        FOREIGN KEY (user_id) REFERENCES users(user_id)
+        FOREIGN KEY (user_id) REFERENCES users(user_id),
       )`;
       connection.query(createCommentsTable, (err) => {
         if (err) {

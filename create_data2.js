@@ -56,9 +56,9 @@ function generateRandomString(length) {
 var con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "bsnt770",
+  password: "shiffy01",
   port: 3306,
-  database: "FullStackProject6",
+  database: "MySQL80",
 });
 
 con.connect(async (err) => {

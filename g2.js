@@ -1,10 +1,10 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'your_mysql_username',
-  password: 'your_mysql_password',
-  database: 'my_database',
+  host: "localhost",
+  user: "root",
+  password: process.argv[2],
+  database: "my_database",
 });
 
 connection.connect((err) => {
@@ -15,10 +15,10 @@ connection.connect((err) => {
   console.log('Connected to the MySQL server');
 
   // Insert sample data into the users table
-  const insertUsers = `INSERT INTO users (username, password) VALUES
-    ('john', 'password123'),
-    ('jane', 'securepassword'),
-    ('mark', 'mysecretpass')`;
+  const insertUsers = `INSERT INTO users (username, password, email, city) VALUES
+    ('john', 'password123', 'john@gmail.com', 'Jerusalem'),
+    ('jane', 'securepassword', 'jane45@gmail.com', 'Be'er Sheva'),
+    ('mark', 'mysecretpass', 'marktwain@gmail.com', 'Tel Aviv')`;
 
   connection.query(insertUsers, (err, result) => {
     if (err) {
