@@ -100,8 +100,52 @@ app.put("/users/:id", (req, res) => {
 
 // Delete a user
 app.delete("/users/:id", (req, res) => {
-  ////////////X
   const userId = req.params.id;
+  //get all this user's posts 
+  let postsquery = "SELECT * FROM posts WHERE user_id=?";
+  let post_ids=[];
+  connection.query(postsquery, [userId], (err, results) => {
+    if (err) {
+      console.error("Failed to fetch posts:", err);
+      res.status(500).json({ error: "Failed to fetch posts" });
+    } else {
+      results.forEach((post) => {
+      post_ids.push(post.post_id); 
+    });
+    
+    }
+  });
+  //for each post, delete all it's comments
+  for(let i=0; i<post_ids.length; i++){
+    let postId=post_ids[i];
+    const commentQuery="DELETE FROM comments WHERE post_id = ?";
+    connection.query(commentQuery, [postId], (err, result) => {
+    if (err) {
+      console.error("Failed to delete comments:", err);
+      res.status(500).json({ error: "Failed to delete comments" });
+    } else {
+    }
+  });
+  }
+  //delete all posts of this user:
+  const postQuery="DELETE FROM posts WHERE user_id = ?";
+  connection.query(postQuery, [userId], (err, result) => {
+  if (err) {
+      console.error("Failed to delete posts:", err);
+      res.status(500).json({ error: "Failed to delete posts" });
+    } else {
+    }
+  });
+  //delete all todos of this user
+  const todosQuery="DELETE FROM todos WHERE user_id = ?";
+  connection.query(todosQuery, [userId], (err, result) => {
+  if (err) {
+      console.error("Failed to delete todos:", err);
+      res.status(500).json({ error: "Failed to delete todos" });
+    } else {
+    }
+  });
+  //finally, delete the user
   const query = "DELETE FROM users WHERE user_id = ?";
   connection.query(query, [userId], (err, result) => {
     if (err) {
@@ -112,20 +156,7 @@ app.delete("/users/:id", (req, res) => {
     }
   });
 });
-/* 
-// Fetch all posts
-app.get('/posts', (req, res) => {
-  const query = 'SELECT * FROM posts';
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error('Failed to fetch posts:', err);
-      res.status(500).json({ error: 'Failed to fetch posts' });
-    } else {
-      res.json(results);
-    }
-  });
-});
- */
+
 
 //fetch all posts by userId:
 app.get("/posts", (req, res) => {
@@ -202,8 +233,17 @@ app.put("/posts/:id", (req, res) => {
 
 // Delete a post
 app.delete("/posts/:id", (req, res) => {
-  //////////////X
+  //delete all of the comments on this post
   const postId = req.params.id;
+  const commentQuery="DELETE FROM comments WHERE post_id = ?";
+  connection.query(commentQuery, [postId], (err, result) => {
+    if (err) {
+      console.error("Failed to delete comments:", err);
+      res.status(500).json({ error: "Failed to delete comments" });
+    } else {
+    }
+  });
+  //delete post
   const query = "DELETE FROM posts WHERE post_id = ?";
   connection.query(query, [postId], (err, result) => {
     if (err) {
@@ -215,18 +255,7 @@ app.delete("/posts/:id", (req, res) => {
   });
 });
 
-/* // Fetch all todos
-app.get('/todos', (req, res) => {
-  const query = 'SELECT * FROM todos';
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error('Failed to fetch todos:', err);
-      res.status(500).json({ error: 'Failed to fetch todos' });
-    } else {
-      res.json(results);
-    }
-  });
-}); */
+
 
 //fetch all todos by userId:
 app.get("/todos", (req, res) => {
@@ -321,18 +350,6 @@ app.delete("/todos/:id", (req, res) => {
   });
 });
 
-/* // Fetch all comments
-app.get('/comments', (req, res) => {
-  const query = 'SELECT * FROM comments';
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error('Failed to fetch comments:', err);
-      res.status(500).json({ error: 'Failed to fetch comments' });
-    } else {
-      res.json(results);
-    }
-  });
-}); */
 
 //fetch all comments by postId:
 app.get("/comments", (req, res) => {
